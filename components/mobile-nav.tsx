@@ -1,7 +1,5 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,19 +10,27 @@ import {
   X,
   Coins, Store, BookOpen, Calendar
 } from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
+type Tab = "prices" | "dealers" | "compare";
 
 interface MobileNavProps {
+  activeTab: Tab;
+  onTabChange: (tab: Tab) => void;
 }
 
-export function MobileNav() {
+export function MobileNav({ activeTab, onTabChange }: MobileNavProps) {
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const tabs = [
-    { href: "/", label: "Prices", icon: TrendingUp },
-    { href: "/dealer-map", label: "Dealers", icon: MapPin },
-    { href: "/bullion-compare", label: "Compare", icon: ArrowUpDown },
+  const inPageTabs = [
+    { id: "prices" as const, label: "Prices", icon: TrendingUp },
+    { id: "dealers" as const, label: "Dealers", icon: MapPin },
+    { id: "compare" as const, label: "Compare", icon: ArrowUpDown },
+  ];
+
+  const externalTabs = [
     { href: "/marketplace", label: "Marketplace", icon: Store },
     { href: "/learn", label: "Learn", icon: BookOpen },
     { href: "/events", label: "Events", icon: Calendar },
@@ -47,7 +53,22 @@ export function MobileNav() {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-1">
-            {tabs.map((tab) => {
+            {inPageTabs.map((tab) => (
+              <Button
+                key={tab.id}
+                variant={activeTab === tab.id ? "secondary" : "ghost"}
+                onClick={() => onTabChange(tab.id)}
+                className={`gap-2 ${
+                  activeTab === tab.id
+                    ? "bg-secondary text-secondary-foreground"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                <tab.icon className="h-4 w-4" />
+                {tab.label}
+              </Button>
+            ))}
+            {externalTabs.map((tab) => {
               const isActive = pathname === tab.href;
               return (
                 <Link
@@ -62,7 +83,7 @@ export function MobileNav() {
                   {tab.label}
                 </Link>
               );
-            })} 
+            })}
           </nav>
 
           {/* Mobile Menu Toggle */}
@@ -84,7 +105,25 @@ export function MobileNav() {
         {isMobileMenuOpen && (
           <div className="glass border-t border-white/10 p-4 md:hidden">
             <nav className="flex flex-col gap-2">
-              {tabs.map((tab) => {
+              {inPageTabs.map((tab) => (
+                <Button
+                  key={tab.id}
+                  variant={activeTab === tab.id ? "secondary" : "ghost"}
+                  onClick={() => {
+                    onTabChange(tab.id);
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className={`justify-start gap-3 ${
+                    activeTab === tab.id
+                      ? "bg-secondary text-secondary-foreground"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  <tab.icon className="h-5 w-5" />
+                  {tab.label}
+                </Button>
+              ))}
+              {externalTabs.map((tab) => {
                 const isActive = pathname === tab.href;
                 return (
                   <Link
@@ -100,7 +139,7 @@ export function MobileNav() {
                     {tab.label}
                   </Link>
                 );
-              })} 
+              })}
             </nav>
           </div>
         )}
@@ -109,7 +148,26 @@ export function MobileNav() {
       {/* Mobile Bottom Navigation */}
       <nav className="glass-nav fixed bottom-0 left-0 right-0 z-50 md:hidden safe-area-inset-bottom">
         <div className="flex h-16 items-center justify-around">
-          {tabs.map((tab) => {
+          {inPageTabs.map((tab) => {
+            const isActive = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => onTabChange(tab.id)}
+                className={`flex flex-1 flex-col items-center justify-center gap-1 py-2 transition-colors ${isActive ? "text-primary" : "text-muted-foreground"}
+                `}
+              >
+                <tab.icon
+                  className={`h-5 w-5 ${isActive ? "text-primary" : ""}`}
+                />
+                <span className="text-xs font-medium">{tab.label}</span>
+                {isActive && (
+                  <div className="absolute top-0 h-0.5 w-12 rounded-full bg-primary" />
+                )}
+              </button>
+            );
+          })}
+          {externalTabs.map((tab) => {
             const isActive = pathname === tab.href;
             return (
               <Link
@@ -127,7 +185,7 @@ export function MobileNav() {
                 )}
               </Link>
             );
-          })} 
+          })}
         </div>
       </nav>
     </>

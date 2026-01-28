@@ -1,15 +1,36 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { MobileNav } from "@/components/mobile-nav";
 import { PriceChart } from "@/components/price-chart";
 import { DealerMap } from "@/components/dealer-map";
 import { BullionCompare } from "@/components/bullion-compare";
 
-type Tab = "chart" | "map" | "compare";
+type Tab = "prices" | "dealers" | "compare";
 
 export default function AuXioApp() {
-  const [activeTab, setActiveTab] = useState<Tab>("chart");
+  const [activeTab, setActiveTab] = useState<Tab>("prices");
+  const priceChartRef = useRef<HTMLDivElement>(null);
+  const dealerMapRef = useRef<HTMLDivElement>(null);
+  const bullionCompareRef = useRef<HTMLDivElement>(null);
+
+  const scrollToSection = (tab: Tab) => {
+    setActiveTab(tab);
+    let ref = null;
+    if (tab === "prices") ref = priceChartRef;
+    else if (tab === "dealers") ref = dealerMapRef;
+    else if (tab === "compare") ref = bullionCompareRef;
+
+    if (ref && ref.current) {
+      ref.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+  useEffect(() => {
+    // Ensure initial scroll on page load if needed, or if a specific tab should be active by default
+    // For now, it will default to 'prices' and scroll to it on initial render
+    scrollToSection("prices");
+  }, []);
 
   return (
     <div className="relative min-h-screen overflow-hidden">
@@ -21,7 +42,7 @@ export default function AuXioApp() {
         <div className="absolute bottom-1/4 right-1/4 h-96 w-96 rounded-full bg-silver/10 blur-3xl" />
       </div>
 
-      <MobileNav activeTab={activeTab} onTabChange={setActiveTab} />
+      <MobileNav activeTab={activeTab} onTabChange={scrollToSection} />
 
       <main className="mx-auto max-w-7xl px-4 py-6 pb-24 md:pb-6">
         {/* Hero Section - Desktop Only */}
@@ -40,18 +61,22 @@ export default function AuXioApp() {
 
         {/* Mobile: Single Tab View */}
         <div className="md:hidden">
-          {activeTab === "chart" && <PriceChart />}
-          {activeTab === "map" && <DealerMap />}
+          {activeTab === "prices" && <PriceChart />}
+          {activeTab === "dealers" && <DealerMap />}
           {activeTab === "compare" && <BullionCompare />}
         </div>
 
         {/* Desktop: Grid Layout */}
         <div className="hidden md:grid md:grid-cols-2 md:gap-6">
           <div className="space-y-6">
-            <PriceChart />
-            <DealerMap />
+            <div id="prices" ref={priceChartRef}>
+              <PriceChart />
+            </div>
+            <div id="dealers" ref={dealerMapRef}>
+              <DealerMap />
+            </div>
           </div>
-          <div>
+          <div id="compare" ref={bullionCompareRef}>
             <BullionCompare />
           </div>
         </div>
