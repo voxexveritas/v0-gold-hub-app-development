@@ -52,7 +52,7 @@ export function MarketplaceSection() {
 
       <div className="space-y-6">
         <h2 className="text-2xl font-bold text-foreground">Community Listings</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="space-y-4"> {/* Changed from grid to vertical spacing */} 
           {mockListings.map((listing, index) => (
             <UserListing key={index} {...listing} />
           ))}
