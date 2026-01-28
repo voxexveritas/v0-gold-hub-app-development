@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -8,23 +10,24 @@ import {
   ArrowUpDown,
   Menu,
   X,
+  Coins, Store, BookOpen, Calendar
 } from "lucide-react";
-import { Coins } from "lucide-react"; // Declaring the Coins variable
 
-type Tab = "chart" | "map" | "compare";
 
 interface MobileNavProps {
-  activeTab: Tab;
-  onTabChange: (tab: Tab) => void;
 }
 
-export function MobileNav({ activeTab, onTabChange }: MobileNavProps) {
+export function MobileNav() {
+  const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const tabs = [
-    { id: "chart" as const, label: "Prices", icon: TrendingUp },
-    { id: "map" as const, label: "Dealers", icon: MapPin },
-    { id: "compare" as const, label: "Compare", icon: ArrowUpDown },
+    { href: "/", label: "Prices", icon: TrendingUp },
+    { href: "/dealer-map", label: "Dealers", icon: MapPin },
+    { href: "/bullion-compare", label: "Compare", icon: ArrowUpDown },
+    { href: "/marketplace", label: "Marketplace", icon: Store },
+    { href: "/learn", label: "Learn", icon: BookOpen },
+    { href: "/events", label: "Events", icon: Calendar },
   ];
 
   return (
@@ -44,21 +47,22 @@ export function MobileNav({ activeTab, onTabChange }: MobileNavProps) {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-1">
-            {tabs.map((tab) => (
-              <Button
-                key={tab.id}
-                variant={activeTab === tab.id ? "secondary" : "ghost"}
-                onClick={() => onTabChange(tab.id)}
-                className={`gap-2 ${
-                  activeTab === tab.id
+            {tabs.map((tab) => {
+              const isActive = pathname === tab.href;
+              return (
+                <Link
+                  key={tab.href}
+                  href={tab.href}
+                  className={`inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 h-9 px-4 py-2 gap-2 ${isActive
                     ? "bg-secondary text-secondary-foreground"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                <tab.icon className="h-4 w-4" />
-                {tab.label}
-              </Button>
-            ))}
+                    : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"}
+                  `}
+                >
+                  <tab.icon className="h-4 w-4" />
+                  {tab.label}
+                </Link>
+              );
+            })} 
           </nav>
 
           {/* Mobile Menu Toggle */}
@@ -80,24 +84,23 @@ export function MobileNav({ activeTab, onTabChange }: MobileNavProps) {
         {isMobileMenuOpen && (
           <div className="glass border-t border-white/10 p-4 md:hidden">
             <nav className="flex flex-col gap-2">
-              {tabs.map((tab) => (
-                <Button
-                  key={tab.id}
-                  variant={activeTab === tab.id ? "secondary" : "ghost"}
-                  onClick={() => {
-                    onTabChange(tab.id);
-                    setIsMobileMenuOpen(false);
-                  }}
-                  className={`justify-start gap-3 ${
-                    activeTab === tab.id
+              {tabs.map((tab) => {
+                const isActive = pathname === tab.href;
+                return (
+                  <Link
+                    key={tab.href}
+                    href={tab.href}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className={`inline-flex items-center justify-start whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 h-9 px-4 py-2 gap-3 ${isActive
                       ? "bg-secondary text-secondary-foreground"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  <tab.icon className="h-5 w-5" />
-                  {tab.label}
-                </Button>
-              ))}
+                      : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"}
+                    `}
+                  >
+                    <tab.icon className="h-5 w-5" />
+                    {tab.label}
+                  </Link>
+                );
+              })} 
             </nav>
           </div>
         )}
@@ -107,14 +110,13 @@ export function MobileNav({ activeTab, onTabChange }: MobileNavProps) {
       <nav className="glass-nav fixed bottom-0 left-0 right-0 z-50 md:hidden safe-area-inset-bottom">
         <div className="flex h-16 items-center justify-around">
           {tabs.map((tab) => {
-            const isActive = activeTab === tab.id;
+            const isActive = pathname === tab.href;
             return (
-              <button
-                key={tab.id}
-                onClick={() => onTabChange(tab.id)}
-                className={`flex flex-1 flex-col items-center justify-center gap-1 py-2 transition-colors ${
-                  isActive ? "text-primary" : "text-muted-foreground"
-                }`}
+              <Link
+                key={tab.href}
+                href={tab.href}
+                className={`flex flex-1 flex-col items-center justify-center gap-1 py-2 transition-colors ${isActive ? "text-primary" : "text-muted-foreground"}
+                `}
               >
                 <tab.icon
                   className={`h-5 w-5 ${isActive ? "text-primary" : ""}`}
@@ -123,9 +125,9 @@ export function MobileNav({ activeTab, onTabChange }: MobileNavProps) {
                 {isActive && (
                   <div className="absolute top-0 h-0.5 w-12 rounded-full bg-primary" />
                 )}
-              </button>
+              </Link>
             );
-          })}
+          })} 
         </div>
       </nav>
     </>
