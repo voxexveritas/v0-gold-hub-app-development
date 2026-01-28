@@ -101,14 +101,9 @@ export function EventMap() {
   };
 
   return (
-    <Card className="glass-card border-0">
-      <CardHeader className="pb-4">
-        <CardTitle className="flex items-center gap-2 text-xl font-bold text-foreground">
-          <MapPin className="h-5 w-5 text-primary" />
-          Event Locations Map
-        </CardTitle>
-
-        <form onSubmit={searchLocation} className="mt-4 flex gap-2">
+    <div className="space-y-4"> { /* Removed Card wrapper as it's handled in parent */}
+      <div className="relative flex-1">
+        <form onSubmit={searchLocation} className="flex gap-2">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
@@ -137,33 +132,31 @@ export function EventMap() {
             <Navigation className="h-4 w-4" />
           </Button>
         </form>
-      </CardHeader>
+      </div>
 
-      <CardContent>
-        <div className="relative mb-4 h-64 overflow-hidden rounded-lg border border-white/10">
-          {isLoading ? (
-            <div className="flex h-full items-center justify-center bg-white/5">
-              <div className="flex flex-col items-center gap-2">
-                <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                <p className="text-sm text-muted-foreground">Loading map...</p>
-              </div>
+      <div className="relative h-64 overflow-hidden rounded-lg border border-white/10">
+        {isLoading ? (
+          <div className="flex h-full items-center justify-center bg-white/5">
+            <div className="flex flex-col items-center gap-2">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              <p className="text-sm text-muted-foreground">Loading map...</p>
             </div>
-          ) : userLocation ? (
-            <iframe
-              title="Event Locations Map"
-              src={getMapUrl()}
-              className="h-full w-full border-0"
-              allowFullScreen
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-            />
-          ) : (
-            <div className="flex h-full items-center justify-center bg-white/5">
-              <p className="text-muted-foreground">Enter a location to view map</p>
-            </div>
-          )}
-        </div>
-      </CardContent>
-    </Card>
+          </div>
+        ) : userLocation ? (
+          <iframe
+            title="Event Locations Map"
+            src={getMapUrl()}
+            className="h-full w-full border-0"
+            allowFullScreen
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+          />
+        ) : (
+          <div className="flex h-full items-center justify-center bg-white/5">
+            <p className="text-muted-foreground">Enter a location to view map</p>
+          </div>
+        )}
+      </div>
+    </div>
   );
 }

@@ -1,6 +1,6 @@
 import { MarketplaceSignupCTA } from "./marketplace-signup-cta";
 import { UserListing } from "./user-listing";
-import { DealerMap } from "../dealer-map"; // Assuming DealerMap is still useful here
+// Removed: import { DealerMap } from "../dealer-map";
 
 const mockListings = [
   {
@@ -8,7 +8,7 @@ const mockListings = [
     location: "Anchorage, AK",
     bio: "Bob has been with the Anchorage Coin Club for 25 years specializing in rare Alaskan gold nuggets and silver dollars.",
     tradeOffers: "Local Coin / Buy / Sell / Trade",
-    imageUrl: "/placeholder-user.jpg", // Using an existing placeholder image
+    imageUrl: "/placeholder-user.jpg",
   },
   {
     name: "Alice Johnson",
@@ -42,24 +42,21 @@ const mockListings = [
 
 export function MarketplaceSection() {
   return (
-    <div className="container mx-auto py-8">
-      <h1 className="text-3xl font-bold mb-4">Local Marketplace</h1>
-      <p className="text-lg mb-8">Connect with private individuals for local gold, coin, and jewelry trades.</p>
+    <div className="glass-card p-6">
+      <h1 className="text-3xl font-bold mb-4 text-foreground">Local Marketplace</h1>
+      <p className="text-lg mb-8 text-muted-foreground">Connect with private individuals for local gold, coin, and jewelry trades.</p>
 
       <div className="mb-8">
         <MarketplaceSignupCTA />
       </div>
 
-      <div className="space-y-6 mb-8">
-        <h2 className="text-2xl font-bold">Community Listings</h2>
-        {mockListings.map((listing, index) => (
-          <UserListing key={index} {...listing} />
-        ))}
-      </div>
-
-      <div className="mt-8">
-        <h2 className="text-2xl font-bold mb-4">Local Dealers Map</h2>
-        <DealerMap />
+      <div className="space-y-6">
+        <h2 className="text-2xl font-bold text-foreground">Community Listings</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {mockListings.map((listing, index) => (
+            <UserListing key={index} {...listing} />
+          ))}
+        </div>
       </div>
     </div>
   );

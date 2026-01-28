@@ -1,3 +1,5 @@
+import { Card, CardContent } from "@/components/ui/card"; // Import Card components
+
 interface EventCardProps {
   event: {
     id: string;
@@ -13,18 +15,18 @@ interface EventCardProps {
 
 export function EventCard({ event }: EventCardProps) {
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden">
-      <img src={event.imageUrl} alt={event.name} className="w-full h-48 object-cover" />
-      <div className="p-4">
-        <h3 className="font-semibold text-lg mb-2">{event.name}</h3>
-        <p className="text-sm text-gray-600 mb-2">
+    <Card className="glass-card overflow-hidden">
+      <img src={event.imageUrl} alt={event.name} className="w-full h-36 object-cover" />
+      <CardContent className="p-4">
+        <h3 className="font-semibold text-base mb-1 text-foreground">{event.name}</h3>
+        <p className="text-xs text-muted-foreground mb-1">
           <strong>Date:</strong> {event.date}
         </p>
-        <p className="text-sm text-gray-600 mb-3">
+        <p className="text-xs text-muted-foreground mb-2">
           <strong>Location:</strong> {event.location}
         </p>
-        <p className="text-gray-700 text-sm">{event.description}</p>
-      </div>
-    </div>
+        <p className="text-foreground text-sm">{event.description}</p>
+      </CardContent>
+    </Card>
   );
 }

@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { MapPin } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
 
 interface UserListingProps {
   name: string;
@@ -11,29 +12,31 @@ interface UserListingProps {
 
 export function UserListing({ name, location, bio, tradeOffers, imageUrl }: UserListingProps) {
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md flex items-start space-x-4">
-      <div className="flex-shrink-0">
-        <Image
-          src={imageUrl}
-          alt={name}
-          width={80}
-          height={80}
-          className="rounded-full object-cover"
-        />
-      </div>
-      <div>
-        <h3 className="text-xl font-bold">{name}</h3>
-        <p className="text-gray-600 flex items-center text-sm mt-1">
-          <MapPin className="h-4 w-4 mr-1 text-gray-500" /> {location}
-        </p>
-        <p className="text-gray-800 mt-2 text-sm">{bio}</p>
-        <p className="text-gray-600 italic text-sm mt-1">
-          Specializing in: {tradeOffers}
-        </p>
-        <button className="mt-3 bg-green-500 hover:bg-green-600 text-white text-sm font-bold py-1.5 px-3 rounded">
-          Contact {name.split(' ')[0]}
-        </button>
-      </div>
-    </div>
+    <Card className="glass-card p-4 flex items-start space-x-4">
+      <CardContent className="p-0 flex flex-grow items-start space-x-4">
+        <div className="flex-shrink-0">
+          <Image
+            src={imageUrl}
+            alt={name}
+            width={60}
+            height={60}
+            className="rounded-full object-cover border border-white/10"
+          />
+        </div>
+        <div>
+          <h3 className="text-lg font-bold text-foreground">{name}</h3>
+          <p className="text-muted-foreground flex items-center text-xs mt-1">
+            <MapPin className="h-3 w-3 mr-1 text-primary" /> {location}
+          </p>
+          <p className="text-foreground mt-2 text-sm">{bio}</p>
+          <p className="text-muted-foreground italic text-xs mt-1">
+            Specializing in: {tradeOffers}
+          </p>
+          <button className="mt-3 bg-primary hover:bg-primary-dark text-primary-foreground text-xs font-bold py-1 px-2 rounded">
+            Contact {name.split(' ')[0]}
+          </button>
+        </div>
+      </CardContent>
+    </Card>
   );
 }

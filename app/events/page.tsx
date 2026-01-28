@@ -1,6 +1,7 @@
 import { EventCard } from "../../components/events/event-card";
 import { EventMap } from "../../components/events/event-map";
 import { AddEventForm } from "../../components/events/add-event-form";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"; // Import Card components
 
 const events = [
   {
@@ -58,24 +59,41 @@ const events = [
 export default function EventsPage() {
   return (
     <div className="container mx-auto py-8">
-      <h1 className="text-3xl font-bold mb-4">Upcoming Precious Metals & Collectibles Events</h1>
-      <p className="text-lg mb-8">
+      <h1 className="text-3xl font-bold mb-4 text-foreground">Upcoming Precious Metals & Collectibles Events</h1>
+      <p className="text-lg mb-8 text-muted-foreground">
         Discover coin shows, conventions, and other events near you, and add your own!
       </p>
 
-      <div className="mb-12">
-        <EventMap />
-      </div>
+      <Card className="glass-card mb-12">
+        <CardHeader className="border-b border-white/10 pb-4">
+          <CardTitle className="text-2xl font-bold text-foreground">Event Locations</CardTitle>
+        </CardHeader>
+        <CardContent className="pt-6">
+          <EventMap />
+        </CardContent>
+      </Card>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-        {events.map((event) => (
-          <EventCard key={event.id} event={event} />
-        ))}
-      </div>
+      <Card className="glass-card mb-12">
+        <CardHeader className="border-b border-white/10 pb-4">
+          <CardTitle className="text-2xl font-bold text-foreground">Featured Events</CardTitle>
+        </CardHeader>
+        <CardContent className="pt-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {events.map((event) => (
+              <EventCard key={event.id} event={event} />
+            ))}
+          </div>
+        </CardContent>
+      </Card>
 
-      <div>
-        <AddEventForm />
-      </div>
+      <Card className="glass-card">
+        <CardHeader className="border-b border-white/10 pb-4">
+          <CardTitle className="text-2xl font-bold text-foreground">Suggest a New Event</CardTitle>
+        </CardHeader>
+        <CardContent className="pt-6">
+          <AddEventForm />
+        </CardContent>
+      </Card>
     </div>
   );
 }
