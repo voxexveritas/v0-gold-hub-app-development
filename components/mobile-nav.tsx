@@ -13,7 +13,7 @@ import {
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-type Tab = "prices" | "dealers" | "compare";
+type Tab = "prices" | "dealers" | "compare" | "marketplace";
 
 interface MobileNavProps {
   activeTab: Tab;
@@ -28,10 +28,10 @@ export function MobileNav({ activeTab, onTabChange }: MobileNavProps) {
     { id: "prices" as const, label: "Prices", icon: TrendingUp },
     { id: "dealers" as const, label: "Dealers", icon: MapPin },
     { id: "compare" as const, label: "Compare", icon: ArrowUpDown },
+    { id: "marketplace" as const, label: "Marketplace", icon: Store },
   ];
 
   const externalTabs = [
-    { href: "/marketplace", label: "Marketplace", icon: Store },
     { href: "/learn", label: "Learn", icon: BookOpen },
     { href: "/events", label: "Events", icon: Calendar },
   ];

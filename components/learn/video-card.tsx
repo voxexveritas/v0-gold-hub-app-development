@@ -16,7 +16,7 @@ export function VideoCard({ video }: VideoCardProps) {
       </a>
       <div className="p-4">
         <h3 className="font-semibold text-lg mb-2">{video.title}</h3>
-        <p className="text-sm text-gray-600 mb-3">{video.topic}</p>
+        <p className="text-sm text-gray-600 mb-3">{video.category}</p>
         <a
           href={video.url}
           target="_blank"

@@ -6,6 +6,8 @@ interface EventCardProps {
     location: string;
     description: string;
     imageUrl: string;
+    lat: number;
+    lng: number;
   };
 }
 

@@ -5,14 +5,16 @@ import { MobileNav } from "@/components/mobile-nav";
 import { PriceChart } from "@/components/price-chart";
 import { DealerMap } from "@/components/dealer-map";
 import { BullionCompare } from "@/components/bullion-compare";
+import { MarketplaceSection } from "@/components/marketplace/marketplace-section";
 
-type Tab = "prices" | "dealers" | "compare";
+type Tab = "prices" | "dealers" | "compare" | "marketplace";
 
 export default function AuXioApp() {
   const [activeTab, setActiveTab] = useState<Tab>("prices");
   const priceChartRef = useRef<HTMLDivElement>(null);
   const dealerMapRef = useRef<HTMLDivElement>(null);
   const bullionCompareRef = useRef<HTMLDivElement>(null);
+  const marketplaceRef = useRef<HTMLDivElement>(null);
 
   const scrollToSection = (tab: Tab) => {
     setActiveTab(tab);
@@ -20,6 +22,7 @@ export default function AuXioApp() {
     if (tab === "prices") ref = priceChartRef;
     else if (tab === "dealers") ref = dealerMapRef;
     else if (tab === "compare") ref = bullionCompareRef;
+    else if (tab === "marketplace") ref = marketplaceRef;
 
     if (ref && ref.current) {
       ref.current.scrollIntoView({ behavior: "smooth" });
@@ -27,8 +30,6 @@ export default function AuXioApp() {
   };
 
   useEffect(() => {
-    // Ensure initial scroll on page load if needed, or if a specific tab should be active by default
-    // For now, it will default to 'prices' and scroll to it on initial render
     scrollToSection("prices");
   }, []);
 
@@ -64,6 +65,7 @@ export default function AuXioApp() {
           {activeTab === "prices" && <PriceChart />}
           {activeTab === "dealers" && <DealerMap />}
           {activeTab === "compare" && <BullionCompare />}
+          {activeTab === "marketplace" && <MarketplaceSection />}
         </div>
 
         {/* Desktop: Grid Layout */}
@@ -76,8 +78,13 @@ export default function AuXioApp() {
               <DealerMap />
             </div>
           </div>
-          <div id="compare" ref={bullionCompareRef}>
-            <BullionCompare />
+          <div className="space-y-6">
+            <div id="compare" ref={bullionCompareRef}>
+              <BullionCompare />
+            </div>
+            <div id="marketplace" ref={marketplaceRef}>
+              <MarketplaceSection />
+            </div>
           </div>
         </div>
 
