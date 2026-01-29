@@ -42,7 +42,7 @@ const mockListings = [
 
 export function MarketplaceSection() {
   return (
-    <Card className="glass-card p-6 rounded-xl max-h-[500px] overflow-y-auto pr-2 glass-scroll">
+    <Card className="glass-card p-6 rounded-xl">
       <CardHeader className="pb-4">
         <CardTitle className="text-xl font-bold text-foreground">Local Marketplace</CardTitle>
       </CardHeader>
@@ -53,13 +53,11 @@ export function MarketplaceSection() {
           <MarketplaceSignupCTA />
         </div>
 
-        <div className="space-y-6">
-          <h2 className="text-2xl font-bold text-foreground">Community Listings</h2>
-          <div className="space-y-4">
-            {mockListings.map((listing, index) => (
-              <UserListing key={index} {...listing} />
-            ))}
-          </div>
+        <h2 className="text-2xl font-bold text-foreground mb-4">Community Listings</h2>
+        <div className="space-y-4 max-h-[350px] overflow-y-auto pr-2 glass-scroll">
+          {mockListings.map((listing, index) => (
+            <UserListing key={index} {...listing} />
+          ))}
         </div>
       </CardContent>
     </Card>
