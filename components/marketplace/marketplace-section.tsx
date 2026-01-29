@@ -46,7 +46,7 @@ export function MarketplaceSection() {
       <CardHeader className="pb-4">
         <CardTitle className="text-xl font-bold text-foreground">Local Marketplace</CardTitle>
       </CardHeader>
-      <CardContent className="p-0">
+      <CardContent>
         <p className="text-lg mb-8 text-muted-foreground">Connect with private individuals for local gold, coin, and jewelry trades.</p>
 
         <div className="mb-8">
