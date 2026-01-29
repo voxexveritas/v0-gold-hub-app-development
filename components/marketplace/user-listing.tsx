@@ -12,7 +12,7 @@ interface UserListingProps {
 
 export function UserListing({ name, location, bio, tradeOffers, imageUrl }: UserListingProps) {
   return (
-    <Card className="glass-card p-4 flex items-start space-x-4">
+    <Card className="glass-card p-4 flex items-start space-x-4 rounded-xl">
       <CardContent className="p-0 flex flex-grow items-start space-x-4">
         <div className="flex-shrink-0">
           <Image

@@ -64,7 +64,7 @@ export default function EventsPage() {
         Discover coin shows, conventions, and other events near you, and add your own!
       </p>
 
-      <Card className="glass-card mb-12">
+      <Card className="glass-card mb-12 rounded-xl">
         <CardHeader className="border-b border-white/10 pb-4">
           <CardTitle className="text-2xl font-bold text-foreground">Event Locations</CardTitle>
         </CardHeader>
@@ -73,12 +73,12 @@ export default function EventsPage() {
         </CardContent>
       </Card>
 
-      <Card className="glass-card mb-12">
+      <Card className="glass-card mb-12 rounded-xl">
         <CardHeader className="border-b border-white/10 pb-4">
           <CardTitle className="text-2xl font-bold text-foreground">Featured Events</CardTitle>
         </CardHeader>
         <CardContent className="pt-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-h-[400px] overflow-y-auto pr-2 glass-scroll">
             {events.map((event) => (
               <EventCard key={event.id} event={event} />
             ))}
@@ -86,7 +86,7 @@ export default function EventsPage() {
         </CardContent>
       </Card>
 
-      <Card className="glass-card">
+      <Card className="glass-card rounded-xl">
         <CardHeader className="border-b border-white/10 pb-4">
           <CardTitle className="text-2xl font-bold text-foreground">Suggest a New Event</CardTitle>
         </CardHeader>

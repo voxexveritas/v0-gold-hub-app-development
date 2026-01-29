@@ -42,7 +42,7 @@ const mockListings = [
 
 export function MarketplaceSection() {
   return (
-    <div className="glass-card p-6">
+    <div className="glass-card p-6 rounded-xl">
       <h1 className="text-3xl font-bold mb-4 text-foreground">Local Marketplace</h1>
       <p className="text-lg mb-8 text-muted-foreground">Connect with private individuals for local gold, coin, and jewelry trades.</p>
 
@@ -52,8 +52,7 @@ export function MarketplaceSection() {
 
       <div className="space-y-6">
         <h2 className="text-2xl font-bold text-foreground">Community Listings</h2>
-        <div className="space-y-4"> {/* Changed from grid to vertical spacing */} 
-          {mockListings.map((listing, index) => (
+        <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2 glass-scroll">          {mockListings.map((listing, index) => (
             <UserListing key={index} {...listing} />
           ))}
         </div>

@@ -134,7 +134,7 @@ export function EventMap() {
         </form>
       </div>
 
-      <div className="relative h-64 overflow-hidden rounded-lg border border-white/10">
+      <div className="relative h-64 overflow-hidden rounded-xl border border-white/10">
         {isLoading ? (
           <div className="flex h-full items-center justify-center bg-white/5">
             <div className="flex flex-col items-center gap-2">

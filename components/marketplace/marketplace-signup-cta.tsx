@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 
 export function MarketplaceSignupCTA() {
   return (
-    <Card className="glass-card p-6 text-center">
+    <Card className="glass-card p-6 text-center rounded-xl">
       <CardContent className="p-0">
         <h2 className="text-2xl font-bold mb-4 text-foreground">Join the Local Marketplace!</h2>
         <p className="text-muted-foreground mb-4">

@@ -1,11 +1,13 @@
 import { VideoCard } from "../../components/learn/video-card";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"; // Import Card components
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { MobileNav } from "@/components/mobile-nav";
+import { useState } from "react"; // Import useState
 
 interface Video {
   id: string;
   title: string;
-  thumbnail: string;
-  url: string;
+  thumbnail: string; // Placeholder for now, VideoCard will handle embeds
+  url: string; // Full YouTube URL
   category: string;
 }
 
@@ -13,210 +15,149 @@ const learningContent: Record<string, Video[]> = {
   Gold: [
     {
       id: "g1",
-      title: "The Basics of Gold Investing",
-      thumbnail: "https://via.placeholder.com/300x150?text=Gold+Basics",
-      url: "https://www.youtube.com/watch?v=gold-basics",
+      title: "5 Best GOLD Investments in 2025 (Ultimate Guide For Investors)",
+      thumbnail: "https://img.youtube.com/vi/WvJdmlDYdLQ/hqdefault.jpg",
+      url: "https://www.youtube.com/watch?v=WvJdmlDYdLQ",
       category: "Gold",
     },
     {
       id: "g2",
-      title: "Understanding Gold Futures Market",
-      thumbnail: "https://via.placeholder.com/300x150?text=Gold+Futures",
-      url: "https://www.youtube.com/watch?v=gold-futures",
+      title: "The REAL Reason You Should Invest in Gold",
+      thumbnail: "https://img.youtube.com/vi/kaVYxfEgS0Q/hqdefault.jpg",
+      url: "https://www.youtube.com/watch?v=kaVYxfEgS0Q",
       category: "Gold",
     },
     {
       id: "g3",
-      title: "Physical Gold vs. Gold ETFs",
-      thumbnail: "https://via.placeholder.com/300x150?text=Gold+ETFs",
-      url: "https://www.youtube.com/watch?v=gold-etfs",
-      category: "Gold",
-    },
-    {
-      id: "g4",
-      title: "History of Gold as Currency",
-      thumbnail: "https://via.placeholder.com/300x150?text=Gold+History",
-      url: "https://www.youtube.com/watch?v=gold-history",
-      category: "Gold",
-    },
-    {
-      id: "g5",
-      title: "Factors Influencing Gold Prices",
-      thumbnail: "https://via.placeholder.com/300x150?text=Gold+Prices",
-      url: "https://www.youtube.com/watch?v=gold-factors",
+      title: "Gold surges to new highs as investors seek 'safe haven' amid global uncertainty",
+      thumbnail: "https://img.youtube.com/vi/MgDbfVOfDmU/hqdefault.jpg",
+      url: "https://www.youtube.com/watch?v=MgDbfVOfDmU",
       category: "Gold",
     },
   ],
   Silver: [
     {
       id: "s1",
-      title: "Investing in Silver: A Comprehensive Guide",
-      thumbnail: "https://via.placeholder.com/300x150?text=Silver+Guide",
-      url: "https://www.youtube.com/watch?v=silver-guide",
+      title: "5 Types of Silver to BUY for Beginners",
+      thumbnail: "https://img.youtube.com/vi/6oGt8qDJOVE/hqdefault.jpg",
+      url: "https://www.youtube.com/watch?v=6oGt8qDJOVE",
       category: "Silver",
     },
     {
       id: "s2",
-      title: "Industrial Demand for Silver",
-      thumbnail: "https://via.placeholder.com/300x150?text=Silver+Demand",
-      url: "https://www.youtube.com/watch?v=silver-demand",
+      title: "How to Invest in Gold & Silver: 4 Methods Explained",
+      thumbnail: "https://img.youtube.com/vi/elpAnwwxR_4/hqdefault.jpg",
+      url: "https://www.youtube.com/watch?v=elpAnwwxR_4",
       category: "Silver",
     },
     {
       id: "s3",
-      title: "Silver vs. Gold: Which is a Better Investment?",
-      thumbnail: "https://via.placeholder.com/300x150?text=Silver+vs+Gold",
-      url: "https://www.youtube.com/watch?v=silver-gold",
-      category: "Silver",
-    },
-    {
-      id: "s4",
-      title: "Collecting Silver Coins for Beginners",
-      thumbnail: "https://via.placeholder.com/300x150?text=Silver+Coins",
-      url: "https://www.youtube.com/watch?v=silver-coins",
-      category: "Silver",
-    },
-    {
-      id: "s5",
-      title: "The Volatility and Opportunities in Silver",
-      thumbnail: "https://via.placeholder.com/300x150?text=Silver+Volatility",
-      url: "https://www.youtube.com/watch?v=silver-volatility",
+      title: "Why I Invest In Silver - PHYSICAL Over SLV and ETFs - Mike Maloney",
+      thumbnail: "https://img.youtube.com/vi/x_fmBPWcAkU/hqdefault.jpg",
+      url: "https://www.youtube.com/watch?v=x_fmBPWcAkU",
       category: "Silver",
     },
   ],
   Palladium: [
     {
       id: "p1",
-      title: "Palladium Investing: What You Need to Know",
-      thumbnail: "https://via.placeholder.com/300x150?text=Palladium+Investing",
-      url: "https://www.youtube.com/watch?v=palladium-investing",
+      title: "The Best Way To Invest In PALLADIUM Today",
+      thumbnail: "https://img.youtube.com/vi/Vz01W14jYRg/hqdefault.jpg",
+      url: "https://www.youtube.com/watch?v=Vz01W14jYRg",
       category: "Palladium",
     },
     {
       id: "p2",
-      title: "The Role of Palladium in Catalytic Converters",
-      thumbnail: "https://via.placeholder.com/300x150?text=Palladium+Auto",
-      url: "https://www.youtube.com/watch?v=palladium-auto",
+      title: "What You NEED To Know About Investing In Palladium!",
+      thumbnail: "https://img.youtube.com/vi/aCg32rF9-X8/hqdefault.jpg",
+      url: "https://www.youtube.com/watch?v=aCg32rF9-X8",
       category: "Palladium",
     },
     {
       id: "p3",
-      title: "Palladium Market Trends and Forecasts",
-      thumbnail: "https://via.placeholder.com/300x150?text=Palladium+Trends",
-      url: "https://www.youtube.com/watch?v=palladium-trends",
-      category: "Palladium",
-    },
-    {
-      id: "p4",
-      title: "Why Palladium is a Precious Metal",
-      thumbnail: "https://via.placeholder.com/300x150?text=Precious+Palladium",
-      url: "https://www.youtube.com/watch?v=palladium-precious",
-      category: "Palladium",
-    },
-    {
-      id: "p5",
-      title: "Mining and Supply of Palladium",
-      thumbnail: "https://via.placeholder.com/300x150?text=Palladium+Mining",
-      url: "https://www.youtube.com/watch?v=palladium-mining",
+      title: "PALLADIUM vs PLATINUM! Which Is The BETTER Investment?",
+      thumbnail: "https://img.youtube.com/vi/P-f2e-0q04g/hqdefault.jpg",
+      url: "https://www.youtube.com/watch?v=P-f2e-0q04g",
       category: "Palladium",
     },
   ],
   "Rare Coins": [
     {
       id: "rc1",
-      title: "Introduction to Rare Coin Collecting",
-      thumbnail: "https://via.placeholder.com/300x150?text=Rare+Coins+Intro",
-      url: "https://www.youtube.com/watch?v=rare-coin-intro",
+      title: "Coin Collecting 101 for Beginners: What You Need to Know to Start Coin Collecting",
+      thumbnail: "https://img.youtube.com/vi/cdeGZ8yJyZQ/hqdefault.jpg",
+      url: "https://www.youtube.com/watch?v=cdeGZ8yJyZQ",
       category: "Rare Coins",
     },
     {
       id: "rc2",
-      title: "Identifying Valuable Error Coins",
-      thumbnail: "https://via.placeholder.com/300x150?text=Error+Coins",
-      url: "https://www.youtube.com/watch?v=error-coins",
+      title: "Coin Collecting For Beginners - Intro To Coin Collecting 101",
+      thumbnail: "https://img.youtube.com/vi/mwXvvh6XXa0/hqdefault.jpg",
+      url: "https://www.youtube.com/watch?v=mwXvvh6XXa0",
       category: "Rare Coins",
     },
     {
       id: "rc3",
-      title: "Grading Your Precious Coins",
-      thumbnail: "https://via.placeholder.com/300x150?text=Coin+Grading",
-      url: "https://www.youtube.com/watch?v=coin-grading",
-      category: "Rare Coins",
-    },
-    {
-      id: "rc4",
-      title: "The Most Expensive Coins Ever Sold",
-      thumbnail: "https://via.placeholder.com/300x150?text=Expensive+Coins",
-      url: "https://www.youtube.com/watch?v=expensive-coins",
-      category: "Rare Coins",
-    },
-    {
-      id: "rc5",
-      title: "Investing in Rare Coins: Risks and Rewards",
-      thumbnail: "https://via.placeholder.com/300x150?text=Rare+Coin+Investing",
-      url: "https://www.youtube.com/watch?v=rare-coin-investing",
+      title: "ANA eLearning Academy - Coin Collecting Basics",
+      thumbnail: "https://img.youtube.com/vi/AbKcarLPaXo/hqdefault.jpg",
+      url: "https://www.youtube.com/watch?v=AbKcarLPaXo",
       category: "Rare Coins",
     },
   ],
   Antiques: [
     {
       id: "a1",
-      title: "Beginner's Guide to Antique Collecting",
-      thumbnail: "https://via.placeholder.com/300x150?text=Antique+Guide",
-      url: "https://www.youtube.com/watch?v=antique-guide",
+      title: "How to Price Antiques, Vintage & Collectibles to Sell Fast!",
+      thumbnail: "https://img.youtube.com/vi/YKsoXfa_HKw/hqdefault.jpg",
+      url: "https://www.youtube.com/watch?v=YKsoXfa_HKw",
       category: "Antiques",
     },
     {
       id: "a2",
-      title: "How to Identify Authentic Antiques",
-      thumbnail: "https://via.placeholder.com/300x150?text=Authentic+Antiques",
-      url: "https://www.youtube.com/watch?v=authentic-antiques",
+      title: "How to Collect Antique Jewellery (5 Top Tips)",
+      thumbnail: "https://img.youtube.com/vi/86aWYgfUCw0/hqdefault.jpg",
+      url: "https://www.youtube.com/watch?v=86aWYgfUCw0",
       category: "Antiques",
     },
     {
       id: "a3",
-      title: "Restoring and Preserving Antiques",
-      thumbnail: "https://via.placeholder.com/300x150?text=Antique+Restore",
-      url: "https://www.youtube.com/watch?v=antique-restore",
-      category: "Antiques",
-    },
-    {
-      id: "a4",
-      title: "Valuing Your Antiques: What to Look For",
-      thumbnail: "https://via.placeholder.com/300x150?text=Antique+Value",
-      url: "https://www.youtube.com/watch?v=antique-value",
-      category: "Antiques",
-    },
-    {
-      id: "a5",
-      title: "Famous Antique Discoveries",
-      thumbnail: "https://via.placeholder.com/300x150?text=Antique+Discoveries",
-      url: "https://www.youtube.com/watch?v=antique-discoveries",
+      title: "How to be a Better Collector: Understanding Basic Collecting Fundamentals",
+      thumbnail: "https://img.youtube.com/vi/fJt0-q0sN1o/hqdefault.jpg",
+      url: "https://www.youtube.com/watch?v=fJt0-q0sN1o",
       category: "Antiques",
     },
   ],
 };
 
 export default function LearnPage() {
-  return (
-    <div className="container mx-auto py-8">
-      <h1 className="text-3xl font-bold mb-4 text-foreground">Learn About Precious Metals & Collectibles</h1>
-      <p className="text-lg mb-8 text-muted-foreground">Expand your knowledge with our curated learning resources across various categories.</p>
+  // activeTab and onTabChange are not directly used on this page for scrolling,
+  // but MobileNav requires them. We can pass dummy values or refactor MobileNav
+  // if this page truly doesn't need that state. For now, a dummy state.
+  const [activeTab, setActiveTab] = useState<any>("none");
+  const handleTabChange = (tab: any) => {}; // Dummy function
 
-      {Object.entries(learningContent).map(([category, videos]) => (
-        <Card key={category} className="glass-card mb-8">
-          <CardHeader className="border-b border-white/10 pb-4">
-            <CardTitle className="text-2xl font-bold text-foreground">{category}</CardTitle>
-          </CardHeader>
-          <CardContent className="pt-6">
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {videos.map((video) => (
-                <VideoCard key={video.id} video={video} />
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      ))}
+  return (
+    <div className="min-h-screen">
+      <MobileNav activeTab={activeTab} onTabChange={handleTabChange} />
+      <main className="container mx-auto py-8">
+        <h1 className="text-3xl font-bold mb-4 text-foreground">Learn About Precious Metals & Collectibles</h1>
+        <p className="text-lg mb-8 text-muted-foreground">Expand your knowledge with our curated learning resources across various categories.</p>
+
+        {Object.entries(learningContent).map(([category, videos]) => (
+          <Card key={category} className="glass-card mb-8 rounded-xl">
+            <CardHeader className="border-b border-white/10 pb-4">
+              <CardTitle className="text-2xl font-bold text-foreground">{category}</CardTitle>
+            </CardHeader>
+            <CardContent className="pt-6">
+              <div className="flex space-x-4 overflow-x-auto pb-4 glass-scroll">
+                {videos.map((video) => (
+                  <VideoCard key={video.id} video={video} />
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </main>
     </div>
   );
 }

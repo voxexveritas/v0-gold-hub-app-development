@@ -15,7 +15,7 @@ interface EventCardProps {
 
 export function EventCard({ event }: EventCardProps) {
   return (
-    <Card className="glass-card overflow-hidden">
+    <Card className="glass-card overflow-hidden rounded-xl">
       <img src={event.imageUrl} alt={event.name} className="w-full h-36 object-cover" />
       <CardContent className="p-4">
         <h3 className="font-semibold text-base mb-1 text-foreground">{event.name}</h3>
