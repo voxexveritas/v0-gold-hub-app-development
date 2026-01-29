@@ -54,7 +54,7 @@ export function MarketplaceSection() {
         </div>
 
         <h2 className="text-2xl font-bold text-foreground mb-4">Community Listings</h2>
-        <div className="space-y-4 max-h-[350px] overflow-y-auto pr-2 glass-scroll">
+        <div className="space-y-4 max-h-[220px] overflow-y-auto pr-2 glass-scroll">
           {mockListings.map((listing, index) => (
             <UserListing key={index} {...listing} />
           ))}
