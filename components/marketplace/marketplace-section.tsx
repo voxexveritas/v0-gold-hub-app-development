@@ -1,6 +1,6 @@
 import { MarketplaceSignupCTA } from "./marketplace-signup-cta";
 import { UserListing } from "./user-listing";
-// Removed: import { DealerMap } from "../dealer-map";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const mockListings = [
   {
@@ -42,21 +42,26 @@ const mockListings = [
 
 export function MarketplaceSection() {
   return (
-    <div className="glass-card p-6 rounded-xl">
-      <h1 className="text-3xl font-bold mb-4 text-foreground">Local Marketplace</h1>
-      <p className="text-lg mb-8 text-muted-foreground">Connect with private individuals for local gold, coin, and jewelry trades.</p>
+    <Card className="glass-card p-6 rounded-xl max-h-[500px] overflow-y-auto pr-2 glass-scroll">
+      <CardHeader className="pb-4">
+        <CardTitle className="text-xl font-bold text-foreground">Local Marketplace</CardTitle>
+      </CardHeader>
+      <CardContent className="p-0">
+        <p className="text-lg mb-8 text-muted-foreground">Connect with private individuals for local gold, coin, and jewelry trades.</p>
 
-      <div className="mb-8">
-        <MarketplaceSignupCTA />
-      </div>
-
-      <div className="space-y-6">
-        <h2 className="text-2xl font-bold text-foreground">Community Listings</h2>
-        <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2 glass-scroll">          {mockListings.map((listing, index) => (
-            <UserListing key={index} {...listing} />
-          ))}
+        <div className="mb-8">
+          <MarketplaceSignupCTA />
         </div>
-      </div>
-    </div>
+
+        <div className="space-y-6">
+          <h2 className="text-2xl font-bold text-foreground">Community Listings</h2>
+          <div className="space-y-4">
+            {mockListings.map((listing, index) => (
+              <UserListing key={index} {...listing} />
+            ))}
+          </div>
+        </div>
+      </CardContent>
+    </Card>
   );
 }
