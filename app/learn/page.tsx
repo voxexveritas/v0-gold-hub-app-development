@@ -1,3 +1,5 @@
+"use client";
+
 import { VideoCard } from "../../components/learn/video-card";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { MobileNav } from "@/components/mobile-nav";
