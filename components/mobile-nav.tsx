@@ -8,7 +8,7 @@ import {
   ArrowUpDown,
   Menu,
   X,
-  Coins, Store, BookOpen, Calendar
+  Store, BookOpen, Calendar, Home
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -16,13 +16,14 @@ import { usePathname } from "next/navigation";
 type Tab = "prices" | "dealers" | "compare" | "marketplace";
 
 interface MobileNavProps {
-  activeTab: Tab;
-  onTabChange: (tab: Tab) => void;
+  activeTab?: Tab;
+  onTabChange?: (tab: Tab) => void;
 }
 
 export function MobileNav({ activeTab, onTabChange }: MobileNavProps) {
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const isHomePage = pathname === "/";
 
   const inPageTabs = [
     { id: "prices" as const, label: "Prices", icon: TrendingUp },
@@ -41,23 +42,32 @@ export function MobileNav({ activeTab, onTabChange }: MobileNavProps) {
       {/* Desktop Header */}
       <header className="glass-header sticky top-0 z-50">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
-          {/* Logo */}
-          <div className="flex items-center gap-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-gold via-gold-light to-gold backdrop-blur-sm border border-gold/50 shadow-lg shadow-gold/20">
-              <span className="text-lg font-black text-primary-foreground tracking-tighter">Au</span>
+          {/* Logo - clickable to go home */}
+          <Link href="/" className="flex items-center gap-2 group">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-gold via-gold-light to-gold backdrop-blur-sm border border-gold/50 shadow-lg shadow-gold/20 group-hover:shadow-gold/40 transition-shadow">
+              <MapPin className="h-5 w-5 text-primary-foreground" />
             </div>
             <span className="text-xl font-bold text-foreground tracking-tight">
-              Au<span className="text-primary">Xio</span>
+              Gold<span className="text-primary">Map</span>
             </span>
-          </div>
+          </Link>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-1">
-            {inPageTabs.map((tab) => (
+            {!isHomePage && (
+              <Link
+                href="/"
+                className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring h-9 px-4 py-2 gap-2 text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+              >
+                <Home className="h-4 w-4" />
+                Home
+              </Link>
+            )}
+            {isHomePage && inPageTabs.map((tab) => (
               <Button
                 key={tab.id}
                 variant={activeTab === tab.id ? "secondary" : "ghost"}
-                onClick={() => onTabChange(tab.id)}
+                onClick={() => onTabChange?.(tab.id)}
                 className={`gap-2 ${
                   activeTab === tab.id
                     ? "bg-secondary text-secondary-foreground"
@@ -105,12 +115,22 @@ export function MobileNav({ activeTab, onTabChange }: MobileNavProps) {
         {isMobileMenuOpen && (
           <div className="glass border-t border-white/10 p-4 md:hidden">
             <nav className="flex flex-col gap-2">
-              {inPageTabs.map((tab) => (
+              {!isHomePage && (
+                <Link
+                  href="/"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="inline-flex items-center justify-start whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring h-9 px-4 py-2 gap-3 text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                >
+                  <Home className="h-5 w-5" />
+                  Home
+                </Link>
+              )}
+              {isHomePage && inPageTabs.map((tab) => (
                 <Button
                   key={tab.id}
                   variant={activeTab === tab.id ? "secondary" : "ghost"}
                   onClick={() => {
-                    onTabChange(tab.id);
+                    onTabChange?.(tab.id);
                     setIsMobileMenuOpen(false);
                   }}
                   className={`justify-start gap-3 ${
@@ -148,25 +168,17 @@ export function MobileNav({ activeTab, onTabChange }: MobileNavProps) {
       {/* Mobile Bottom Navigation */}
       <nav className="glass-nav fixed bottom-0 left-0 right-0 z-50 md:hidden safe-area-inset-bottom">
         <div className="flex h-16 items-center justify-around">
-          {inPageTabs.map((tab) => {
-            const isActive = activeTab === tab.id;
-            return (
-              <button
-                key={tab.id}
-                onClick={() => onTabChange(tab.id)}
-                className={`flex flex-1 flex-col items-center justify-center gap-1 py-2 transition-colors ${isActive ? "text-primary" : "text-muted-foreground"}
-                `}
-              >
-                <tab.icon
-                  className={`h-5 w-5 ${isActive ? "text-primary" : ""}`}
-                />
-                <span className="text-xs font-medium">{tab.label}</span>
-                {isActive && (
-                  <div className="absolute top-0 h-0.5 w-12 rounded-full bg-primary" />
-                )}
-              </button>
-            );
-          })}
+          {/* Home button always visible */}
+          <Link
+            href="/"
+            className={`flex flex-1 flex-col items-center justify-center gap-1 py-2 transition-colors ${isHomePage ? "text-primary" : "text-muted-foreground"}`}
+          >
+            <Home className={`h-5 w-5 ${isHomePage ? "text-primary" : ""}`} />
+            <span className="text-xs font-medium">Home</span>
+            {isHomePage && (
+              <div className="absolute top-0 h-0.5 w-12 rounded-full bg-primary" />
+            )}
+          </Link>
           {externalTabs.map((tab) => {
             const isActive = pathname === tab.href;
             return (

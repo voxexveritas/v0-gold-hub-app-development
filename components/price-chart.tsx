@@ -196,7 +196,7 @@ export function PriceChart() {
         </div>
 
         <p className="text-xs text-muted-foreground">
-          Per troy ounce | Last updated: {lastUpdate.toLocaleTimeString()}
+          Per troy ounce | Last updated: {mounted ? lastUpdate.toLocaleTimeString() : "--:--:--"}
         </p>
       </CardHeader>
 

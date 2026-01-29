@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -119,6 +119,12 @@ export function BullionCompare() {
   const [selectedCoin, setSelectedCoin] = useState<CoinType>("american_eagle");
   const [selectedBar, setSelectedBar] = useState<BarSize>("1oz");
   const [sortBy, setSortBy] = useState<"price" | "premium" | "total">("total");
+  const [mounted, setMounted] = useState(false);
+
+  // Ensure component is mounted before using random values
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Current spot prices as of Jan 2026
   const spotPrices = {
@@ -150,9 +156,10 @@ export function BullionCompare() {
       ? spotPrice * getWeight(selectedBar)
       : spotPrice;
 
+  // Only generate prices after mount to avoid hydration mismatch
   const dealerPrices = useMemo(
-    () => generateDealerPrices(adjustedSpot, productType, selection),
-    [adjustedSpot, productType, selection]
+    () => mounted ? generateDealerPrices(adjustedSpot, productType, selection) : [],
+    [adjustedSpot, productType, selection, mounted]
   );
 
   const sortedPrices = useMemo(() => {
@@ -171,10 +178,9 @@ export function BullionCompare() {
 
   const lowestPrice = sortedPrices[0];
   const highestPrice = sortedPrices[sortedPrices.length - 1];
-  const savings =
-    highestPrice.price +
-    highestPrice.shipping -
-    (lowestPrice.price + lowestPrice.shipping);
+  const savings = lowestPrice && highestPrice
+    ? highestPrice.price + highestPrice.shipping - (lowestPrice.price + lowestPrice.shipping)
+    : 0;
 
   return (
     <Card className="glass-card border-0">
@@ -284,7 +290,7 @@ export function BullionCompare() {
             <div>
               <p className="text-xs text-muted-foreground">Potential Savings</p>
               <p className="font-bold text-success">
-                ${savings.toFixed(2)}
+                ${mounted ? savings.toFixed(2) : "--"}
               </p>
             </div>
           </div>

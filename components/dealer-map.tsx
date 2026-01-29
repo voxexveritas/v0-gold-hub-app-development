@@ -14,6 +14,8 @@ import {
   Phone,
   ExternalLink,
   Loader2,
+  Users,
+  Building2,
 } from "lucide-react";
 
 interface Dealer {
@@ -27,6 +29,18 @@ interface Dealer {
   phone: string;
   hours: string;
   isOpen: boolean;
+  lat: number;
+  lng: number;
+}
+
+interface Club {
+  id: string;
+  name: string;
+  address: string;
+  distance: string;
+  members: number;
+  meetingDay: string;
+  website?: string;
   lat: number;
   lng: number;
 }
@@ -63,6 +77,32 @@ const generateDealers = (lat: number, lng: number): Dealer[] => {
   }));
 };
 
+// Simulated club data
+const generateClubs = (lat: number, lng: number): Club[] => {
+  const clubNames = [
+    "Metro Coin Club",
+    "Heritage Numismatic Society",
+    "Silver Stackers Association",
+    "Gold Collectors Guild",
+    "Valley Numismatic Club",
+    "Capital City Coin Society",
+  ];
+
+  const meetingDays = ["1st Monday", "2nd Tuesday", "3rd Wednesday", "Last Thursday", "1st Saturday", "2nd Sunday"];
+
+  return clubNames.map((name, i) => ({
+    id: `club-${i}`,
+    name,
+    address: `${200 + i * 50} Community Center Dr`,
+    distance: `${(1.0 + i * 1.5).toFixed(1)} mi`,
+    members: Math.floor(25 + Math.random() * 150),
+    meetingDay: meetingDays[i],
+    website: i % 2 === 0 ? `https://${name.toLowerCase().replace(/\s/g, "")}.org` : undefined,
+    lat: lat + (Math.random() - 0.5) * 0.15,
+    lng: lng + (Math.random() - 0.5) * 0.15,
+  }));
+};
+
 const typeLabels: Record<Dealer["type"], string> = {
   coin_dealer: "Coin Dealer",
   jewelry: "Jewelry Store",
@@ -78,17 +118,19 @@ const typeColors: Record<Dealer["type"], string> = {
 };
 
 // Search query mapping for Google Maps
-const typeSearchQueries: Record<Dealer["type"] | "all", string> = {
+const typeSearchQueries: Record<Dealer["type"] | "all" | "clubs", string> = {
   all: "gold dealer OR coin shop OR jewelry store OR bullion dealer",
   coin_dealer: "coin dealer OR coin shop",
   jewelry: "jewelry store OR gold jewelry",
   pawn: "pawn shop gold silver",
   bullion: "bullion dealer OR precious metals dealer",
+  clubs: "coin club OR numismatic society OR coin collectors club",
 };
 
 export function DealerMap() {
   const [location, setLocation] = useState("");
   const [dealers, setDealers] = useState<Dealer[]>([]);
+  const [clubs, setClubs] = useState<Club[]>([]);
   const [selectedDealer, setSelectedDealer] = useState<Dealer | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [userLocation, setUserLocation] = useState<{
@@ -97,14 +139,17 @@ export function DealerMap() {
     city: string;
   } | null>(null);
   const [filterType, setFilterType] = useState<Dealer["type"] | "all">("all");
+  const [viewMode, setViewMode] = useState<"dealers" | "clubs">("dealers");
 
   // Build Google Maps embed URL with search query
   const getMapUrl = useCallback(() => {
     if (!userLocation) return "";
-    const searchQuery = typeSearchQueries[filterType];
+    const searchQuery = viewMode === "clubs" 
+      ? typeSearchQueries.clubs 
+      : typeSearchQueries[filterType];
     const query = encodeURIComponent(`${searchQuery} near ${userLocation.city}`);
     return `https://www.google.com/maps/embed/v1/search?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=${query}&center=${userLocation.lat},${userLocation.lng}&zoom=12`;
-  }, [userLocation, filterType]);
+  }, [userLocation, filterType, viewMode]);
 
   // Detect location via IP geolocation API
   const detectLocationByIP = useCallback(async () => {
@@ -123,6 +168,7 @@ export function DealerMap() {
         setUserLocation(locationData);
         setLocation(locationData.city);
         setDealers(generateDealers(data.latitude, data.longitude));
+        setClubs(generateClubs(data.latitude, data.longitude));
       } else {
         throw new Error("No location data");
       }
@@ -136,6 +182,7 @@ export function DealerMap() {
       setUserLocation(defaultLocation);
       setLocation(defaultLocation.city);
       setDealers(generateDealers(defaultLocation.lat, defaultLocation.lng));
+      setClubs(generateClubs(defaultLocation.lat, defaultLocation.lng));
     } finally {
       setIsLoading(false);
     }
@@ -165,10 +212,12 @@ export function DealerMap() {
             setUserLocation(locationData);
             setLocation(locationData.city);
             setDealers(generateDealers(latitude, longitude));
+            setClubs(generateClubs(latitude, longitude));
           } catch {
             setUserLocation({ lat: latitude, lng: longitude, city: "Current Location" });
             setLocation("Current Location");
             setDealers(generateDealers(latitude, longitude));
+            setClubs(generateClubs(latitude, longitude));
           }
           setIsLoading(false);
         },
@@ -219,6 +268,7 @@ export function DealerMap() {
       
       setUserLocation({ ...coords, city: location });
       setDealers(generateDealers(coords.lat, coords.lng));
+      setClubs(generateClubs(coords.lat, coords.lng));
       setIsLoading(false);
     }, 500);
   };
@@ -231,10 +281,31 @@ export function DealerMap() {
   return (
     <Card className="glass-card border-0">
       <CardHeader className="pb-4">
-        <CardTitle className="flex items-center gap-2 text-xl font-bold text-foreground">
-          <MapPin className="h-5 w-5 text-primary" />
-          Find Dealers Near You
-        </CardTitle>
+        <div className="flex items-center justify-between">
+          <CardTitle className="flex items-center gap-2 text-xl font-bold text-foreground">
+            <MapPin className="h-5 w-5 text-primary" />
+            Find {viewMode === "dealers" ? "Dealers" : "Clubs"} Near You
+          </CardTitle>
+          {/* Toggle Button */}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setViewMode(viewMode === "dealers" ? "clubs" : "dealers")}
+            className="bg-white/5 border-white/10 hover:bg-white/10 gap-2"
+          >
+            {viewMode === "dealers" ? (
+              <>
+                <Users className="h-4 w-4" />
+                Clubs
+              </>
+            ) : (
+              <>
+                <Building2 className="h-4 w-4" />
+                Dealers
+              </>
+            )}
+          </Button>
+        </div>
 
         {/* Search Form */}
         <form onSubmit={searchLocation} className="mt-4 flex gap-2">
@@ -267,28 +338,30 @@ export function DealerMap() {
           </Button>
         </form>
 
-        {/* Filter Buttons */}
-        <div className="mt-4 flex flex-wrap gap-2">
-          <Button
-            variant={filterType === "all" ? "secondary" : "ghost"}
-            size="sm"
-            onClick={() => setFilterType("all")}
-            className={`text-xs ${filterType !== "all" ? "border border-white/10 hover:bg-white/10" : ""}`}
-          >
-            All
-          </Button>
-          {(Object.keys(typeLabels) as Dealer["type"][]).map((type) => (
+        {/* Filter Buttons - Only show for Dealers view */}
+        {viewMode === "dealers" && (
+          <div className="mt-4 flex flex-wrap gap-2">
             <Button
-              key={type}
-              variant={filterType === type ? "secondary" : "ghost"}
+              variant={filterType === "all" ? "secondary" : "ghost"}
               size="sm"
-              onClick={() => setFilterType(type)}
-              className={`text-xs ${filterType !== type ? "border border-white/10 hover:bg-white/10" : ""}`}
+              onClick={() => setFilterType("all")}
+              className={`text-xs ${filterType !== "all" ? "border border-white/10 hover:bg-white/10" : ""}`}
             >
-              {typeLabels[type]}
+              All
             </Button>
-          ))}
-        </div>
+            {(Object.keys(typeLabels) as Dealer["type"][]).map((type) => (
+              <Button
+                key={type}
+                variant={filterType === type ? "secondary" : "ghost"}
+                size="sm"
+                onClick={() => setFilterType(type)}
+                className={`text-xs ${filterType !== type ? "border border-white/10 hover:bg-white/10" : ""}`}
+              >
+                {typeLabels[type]}
+              </Button>
+            ))}
+          </div>
+        )}
       </CardHeader>
 
       <CardContent>
@@ -303,7 +376,7 @@ export function DealerMap() {
             </div>
           ) : userLocation ? (
             <iframe
-              title="Dealer Map"
+              title={viewMode === "dealers" ? "Dealer Map" : "Club Map"}
               src={getMapUrl()}
               className="h-full w-full border-0"
               allowFullScreen
@@ -317,102 +390,186 @@ export function DealerMap() {
           )}
         </div>
 
-        {/* Dealer List */}
-        <div className="max-h-80 space-y-3 overflow-y-auto pr-2 glass-scroll">
-          {filteredDealers.length === 0 ? (
-            <p className="py-8 text-center text-muted-foreground">
-              No dealers found in this area. Try a different location.
-            </p>
-          ) : (
-            filteredDealers.map((dealer) => (
-              <div
-                key={dealer.id}
-                onClick={() => setSelectedDealer(dealer)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    setSelectedDealer(dealer);
-                  }
-                }}
-                role="button"
-                tabIndex={0}
-                className={`cursor-pointer rounded-lg border p-3 transition-all backdrop-blur-sm ${
-                  selectedDealer?.id === dealer.id
-                    ? "border-primary/50 bg-primary/10"
-                    : "border-white/10 bg-white/5 hover:border-primary/30 hover:bg-white/10"
-                }`}
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0 flex-1">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <h3 className="truncate font-semibold text-foreground">
-                        {dealer.name}
-                      </h3>
-                      <Badge
-                        variant="outline"
-                        className={`text-xs ${typeColors[dealer.type]}`}
-                      >
-                        {typeLabels[dealer.type]}
-                      </Badge>
-                    </div>
-                    <p className="mt-1 truncate text-sm text-muted-foreground">
-                      {dealer.address}
-                    </p>
-                    <div className="mt-2 flex flex-wrap items-center gap-3 text-xs">
-                      <span className="flex items-center gap-1">
-                        <Star className="h-3 w-3 fill-gold text-gold" />
-                        <span className="text-foreground">
-                          {dealer.rating.toFixed(1)}
+        {/* Dealers List */}
+        {viewMode === "dealers" && (
+          <div className="max-h-80 space-y-3 overflow-y-auto pr-2 glass-scroll">
+            {filteredDealers.length === 0 ? (
+              <p className="py-8 text-center text-muted-foreground">
+                No dealers found in this area. Try a different location.
+              </p>
+            ) : (
+              filteredDealers.map((dealer) => (
+                <div
+                  key={dealer.id}
+                  onClick={() => setSelectedDealer(dealer)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      setSelectedDealer(dealer);
+                    }
+                  }}
+                  role="button"
+                  tabIndex={0}
+                  className={`cursor-pointer rounded-lg border p-3 transition-all backdrop-blur-sm ${
+                    selectedDealer?.id === dealer.id
+                      ? "border-primary/50 bg-primary/10"
+                      : "border-white/10 bg-white/5 hover:border-primary/30 hover:bg-white/10"
+                  }`}
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0 flex-1">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <h3 className="truncate font-semibold text-foreground">
+                          {dealer.name}
+                        </h3>
+                        <Badge
+                          variant="outline"
+                          className={`text-xs ${typeColors[dealer.type]}`}
+                        >
+                          {typeLabels[dealer.type]}
+                        </Badge>
+                      </div>
+                      <p className="mt-1 truncate text-sm text-muted-foreground">
+                        {dealer.address}
+                      </p>
+                      <div className="mt-2 flex flex-wrap items-center gap-3 text-xs">
+                        <span className="flex items-center gap-1">
+                          <Star className="h-3 w-3 fill-gold text-gold" />
+                          <span className="text-foreground">
+                            {dealer.rating.toFixed(1)}
+                          </span>
+                          <span className="text-muted-foreground">
+                            ({dealer.reviews})
+                          </span>
+                        </span>
+                        <span className="flex items-center gap-1 text-muted-foreground">
+                          <Clock className="h-3 w-3" />
+                          <span
+                            className={
+                              dealer.isOpen ? "text-success" : "text-destructive"
+                            }
+                          >
+                            {dealer.isOpen ? "Open" : "Closed"}
+                          </span>
                         </span>
                         <span className="text-muted-foreground">
-                          ({dealer.reviews})
+                          {dealer.distance}
                         </span>
-                      </span>
-                      <span className="flex items-center gap-1 text-muted-foreground">
-                        <Clock className="h-3 w-3" />
-                        <span
-                          className={
-                            dealer.isOpen ? "text-success" : "text-destructive"
-                          }
-                        >
-                          {dealer.isOpen ? "Open" : "Closed"}
-                        </span>
-                      </span>
-                      <span className="text-muted-foreground">
-                        {dealer.distance}
-                      </span>
+                      </div>
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 hover:bg-white/10"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          window.open(`tel:${dealer.phone}`);
+                        }}
+                      >
+                        <Phone className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 hover:bg-white/10"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          window.open(
+                            `https://maps.google.com/?q=${encodeURIComponent(dealer.name + " " + dealer.address)}`
+                          );
+                        }}
+                      >
+                        <ExternalLink className="h-4 w-4" />
+                      </Button>
                     </div>
                   </div>
-                  <div className="flex flex-col gap-1">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8 hover:bg-white/10"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        window.open(`tel:${dealer.phone}`);
-                      }}
-                    >
-                      <Phone className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8 hover:bg-white/10"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        window.open(
-                          `https://maps.google.com/?q=${encodeURIComponent(dealer.name + " " + dealer.address)}`
-                        );
-                      }}
-                    >
-                      <ExternalLink className="h-4 w-4" />
-                    </Button>
+                </div>
+              ))
+            )}
+          </div>
+        )}
+
+        {/* Clubs List */}
+        {viewMode === "clubs" && (
+          <div className="max-h-80 space-y-3 overflow-y-auto pr-2 glass-scroll">
+            {clubs.length === 0 ? (
+              <p className="py-8 text-center text-muted-foreground">
+                No clubs found in this area. Try a different location.
+              </p>
+            ) : (
+              clubs.map((club) => (
+                <div
+                  key={club.id}
+                  className="cursor-pointer rounded-lg border p-3 transition-all backdrop-blur-sm border-white/10 bg-white/5 hover:border-primary/30 hover:bg-white/10"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0 flex-1">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <h3 className="truncate font-semibold text-foreground">
+                          {club.name}
+                        </h3>
+                        <Badge
+                          variant="outline"
+                          className="text-xs bg-primary/20 text-primary border-primary/30"
+                        >
+                          Club
+                        </Badge>
+                      </div>
+                      <p className="mt-1 truncate text-sm text-muted-foreground">
+                        {club.address}
+                      </p>
+                      <div className="mt-2 flex flex-wrap items-center gap-3 text-xs">
+                        <span className="flex items-center gap-1">
+                          <Users className="h-3 w-3 text-primary" />
+                          <span className="text-foreground">
+                            {club.members} members
+                          </span>
+                        </span>
+                        <span className="flex items-center gap-1 text-muted-foreground">
+                          <Clock className="h-3 w-3" />
+                          <span className="text-foreground">
+                            {club.meetingDay}
+                          </span>
+                        </span>
+                        <span className="text-muted-foreground">
+                          {club.distance}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      {club.website && (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 hover:bg-white/10"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            window.open(club.website, "_blank");
+                          }}
+                        >
+                          <ExternalLink className="h-4 w-4" />
+                        </Button>
+                      )}
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 hover:bg-white/10"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          window.open(
+                            `https://maps.google.com/?q=${encodeURIComponent(club.name + " " + club.address)}`
+                          );
+                        }}
+                      >
+                        <MapPin className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))
-          )}
-        </div>
+              ))
+            )}
+          </div>
+        )}
       </CardContent>
     </Card>
   );

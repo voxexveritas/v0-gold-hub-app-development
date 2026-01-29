@@ -1,6 +1,10 @@
+"use client";
+
 import { MarketplaceSignupCTA } from "./marketplace-signup-cta";
 import { UserListing } from "./user-listing";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Store } from "lucide-react";
+import Link from "next/link";
 
 const mockListings = [
   {
@@ -42,19 +46,39 @@ const mockListings = [
 
 export function MarketplaceSection() {
   return (
-    <Card className="glass-card p-6 rounded-xl max-h-[500px] overflow-y-auto pr-2 glass-scroll">
-      <CardHeader className="pb-4">
-        <CardTitle className="text-xl font-bold text-foreground">Local Marketplace</CardTitle>
-      </CardHeader>
-      <CardContent className="p-0">
-        <p className="text-lg mb-8 text-muted-foreground">Connect with private individuals for local gold, coin, and jewelry trades.</p>
-
-        <div className="mb-8">
-          <MarketplaceSignupCTA />
+    <Card className="glass-card border-0 rounded-xl flex flex-col" style={{ height: "calc(572px + 64px)" }}>
+      {/* Fixed Header */}
+      <CardHeader className="pb-4 flex-shrink-0 border-b border-white/10">
+        <div className="flex items-center gap-3">
+          <div className="h-10 w-10 rounded-xl bg-primary/20 flex items-center justify-center">
+            <Store className="h-5 w-5 text-primary" />
+          </div>
+          <div>
+            <CardTitle className="text-xl font-bold text-foreground">Local Marketplace</CardTitle>
+            <p className="text-sm text-muted-foreground">Connect with private collectors nearby</p>
+          </div>
         </div>
-
-        <h2 className="text-2xl font-bold text-foreground mb-4">Community Listings</h2>
-        <div className="space-y-4">
+      </CardHeader>
+      
+      {/* Fixed CTA Section */}
+      <div className="flex-shrink-0 p-4 border-b border-white/10">
+        <Link href="/marketplace/signup">
+          <div className="glass-card p-5 rounded-xl text-center hover:bg-white/10 transition-colors cursor-pointer">
+            <h3 className="text-lg font-bold mb-2 text-foreground">Join the Local Marketplace!</h3>
+            <p className="text-muted-foreground text-sm mb-3">
+              Sign up to get added to the listings map and connect with local buyers and sellers.
+            </p>
+            <span className="inline-block bg-primary hover:bg-primary/90 text-primary-foreground font-bold py-2 px-6 rounded-lg transition-colors">
+              Sign Up Today
+            </span>
+          </div>
+        </Link>
+      </div>
+      
+      {/* Scrollable Content */}
+      <CardContent className="flex-1 overflow-y-auto p-4 glass-scroll">
+        <h3 className="text-lg font-semibold text-foreground mb-4">Community Listings</h3>
+        <div className="space-y-3">
           {mockListings.map((listing, index) => (
             <UserListing key={index} {...listing} />
           ))}

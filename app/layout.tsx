@@ -8,9 +8,9 @@ const _inter = Inter({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "AuXio - Live Precious Metals Tracker",
+  title: "GoldMap - Your Complete Precious Metals Command Center",
   description:
-    "Track live gold and silver spot prices, find local dealers, and compare bullion premiums across major dealers.",
+    "Track live gold and silver prices, find local dealers, compare bullion premiums, connect with collectors, discover coin shows, and master precious metals investing.",
   generator: "v0.app",
   icons: {
     icon: [
