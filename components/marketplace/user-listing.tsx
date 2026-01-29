@@ -24,7 +24,12 @@ export function UserListing({ name, location, bio, tradeOffers, imageUrl }: User
           />
         </div>
         <div>
-          <h3 className="text-lg font-bold text-foreground">{name}</h3>
+          <div className="flex items-center justify-between gap-2">
+            <h3 className="text-lg font-bold text-foreground">{name}</h3>
+            <button className="bg-primary hover:bg-primary-dark text-primary-foreground text-xs font-bold py-1 px-2 rounded">
+              Contact {name.split(' ')[0]}
+            </button>
+          </div>
           <p className="text-muted-foreground flex items-center text-xs mt-1">
             <MapPin className="h-3 w-3 mr-1 text-primary" /> {location}
           </p>
@@ -32,9 +37,6 @@ export function UserListing({ name, location, bio, tradeOffers, imageUrl }: User
           <p className="text-muted-foreground italic text-xs mt-1">
             Specializing in: {tradeOffers}
           </p>
-          <button className="mt-3 bg-primary hover:bg-primary-dark text-primary-foreground text-xs font-bold py-1 px-2 rounded">
-            Contact {name.split(' ')[0]}
-          </button>
         </div>
       </CardContent>
     </Card>
